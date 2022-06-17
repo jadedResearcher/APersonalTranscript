@@ -1,0 +1,192 @@
+<html>
+
+<head>
+  <title>A Censored Transcript</title>
+  <link rel="stylesheet" href="index.css">
+  <link rel="icon" href="alt.ico" />
+
+  <script>
+    //https://dev.to/ekeijl/retro-crt-terminal-screen-in-css-js-4afh
+    const clickAudio = new Audio("audio/web_SoundFX_254286__jagadamba__mechanical-switch.mp3");
+    const humAudio = new Audio("audio/234918__timbahrij__ambient-low-hum-aircon.mp3");
+    let speed = 50;
+   
+
+
+    const getRandomNumberBetween = (min, max) => {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    const pickFrom = (array) => {
+      return array[getRandomNumberBetween(0, array.length - 1)];
+    }
+
+    const sleep = (ms) => {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+
+    const realtext = `
+    Uh, Week 3. Date is the 5th of July, 1983. This is Researcher Ria, written as R5 of the current Theta Department. This is the daily report on Dev-- I-- I mean, L-O-R4. 
+
+[CLEARS THROAT.]
+
+It has been... a rough couple of days, but it has gotten better from where she first started. She doesn't freak out and starts attacking us at random anymore, and she's started being able to hold... her normal form... again, at least while sleeping. She sleeps a lot still... sixteen hours every day, and then maybe stays awake for eight. We've had to double up on food rations, but she doesn't seem particularly interested in eating meat like we expected, which is... a relief, honestly. As for rehabilitation, she currently responds well to being given social activities, and, uh, just about nothing else? And she does not respond well when we attempt to stop her from hunting. It, uh... it makes her hostile. Very hostile.
+
+I... I've tried tracking down the rando myself, to see if maybe if we just found them she'd calm down again? But the more I stare at the info we have the more I just don't get it. It doesn't make any sense. It's been three weeks. If they didn't mean it, I would've found something already, but it was too clean, you know? The armor won't even let you just shoot someone once. They clearly knew how to get around it, or maybe they didn't, and just lucked out. I can't have that all up for her to see, she'll lose it, but--
+
+Oh, wait. Ending log. She's coming over here.
+
+[STEPPING CAN BE HEARD. IT PROGRESSIVELY GETS LOUDER AND CLOSER.]
+
+Hey, girl. What's wrong? That nightmare again?
+
+[ANXIOUS FLUTTERING.]
+
+Oh... I'm sorry. I'm-- it's alright. I'm here, okay? Be-- be careful with the coat! I don't know if you'd want to talk about it, I-- I mean, you can't, but, but, uh, I guess if you can't... I could ramble if it'd make you feel better?
+
+That's okay? Yeah, alright. What to talk about...
+
+
+
+
+I've been updating the wall again! Yeah, I've put some stuff around... I had to tear some of the old stuff down, though. It was clogging my mind up, you know? Weighing the thoughts down. Getting me distracted. We, we don't need half of them anymore, and they weren't leading anywhere, and it's not like we get that much info on Mr. Cassan anymore, and I needed... I needed to keep all our chores noted down somewhere, and I was gonna miss them if I didn't put them on the wall, so I put them on the wall. Yeah, our stuff is all there. Wib's shifts are actually cataloged now, so he knows when he has to switch shifts with me and when he doesn't, and he actually came up to me yesterday and he pulled me aside! He was like, oh, this is actually pretty convenient Ria, and he had been having problems keeping track, and that he appreciated it, which I thought was crazy, right? Like ‘oh my gosh, he actually thanked me', you know. I mean, you know him, he doesn't really tend to talk to us like that, or really acknowledge that kind of stuff-- really kind of aloof like that, super job-focused, so I was happy to know! I'm really glad he told me.  Especially because I'm not really good at it, so it's not perfect, but, but-- it doesn't have to be? It just works out. I'm glad it helps. 
+
+I don't know what Mil thinks about it though. It's... she's not gonna tell me. I know she's not going to, but it's so hard, you know? I mean, she used to tell me these things, and now she can't, and... I mean, even... back then... she found her way to let me know stuff, like she'd take a bow, or she'd give me a pat, and that last one was weird but at least she was doing the effort of letting me know, like... I knew if she was okay with what I was doing. And now she mostly just gets angry at me, and I'm just like, what did I do wrong, right? I started making this wall because she gave me that job, and then she gets upset when I do it, it's like eggshells. I'm tired of feeling like I have to sidestep her because she won't even try--
+
+[SOMETHING RUBS UP AGAINST THE MICROPHONE.]
+
+Argh-- careful with the nuzzling, Devy, you're heavy! Bplth-- you're going to make me eat your feathers! Ack--! Okay, Devy! Down! Not my hair! Yeah. Yeah, thank you.
+
+I know you care, Devy-- you let me know stuff all the time, so don't worry about it, alright? I'm fine. And I'm sorry it's been hard, ever since... yeah. Listen, we'll get that d-hole, alright? We'll make him pay. You're safe here. Make yourself comfortable, okay?
+
+[THERE'S SOME COOING BEFORE THE SOUND OF SOMETHING SCRUNCHING OFF GOES OFF. THE MONSTER'S RUMBLING OVER THE MIC IS APPARENT AS IT DOZES OFF.]
+
+That's-- that's a little bit too comfortable! Hey! Wake up! Argh. No, that's fine. I'll stay down here. Good night, Devy.
+
+[SEVERAL MOMENTS PASS. AFTER THE TEN MINUTE MARK, THE MICROPHONE IS FISHED OUT OF WHERE IT HAD NESTLED ITSELF.]
+
+Oh. Hm. That was all recorded, huh? Hm. Well. This is... this is Researcher Ria, reporting that what you have heard shows... no new occurrences. Nothing else to report. 
+
+Ending log.
+
+`;
+
+
+    const transcript = async (linesUnedited) => {
+
+
+      const lines = linesUnedited.split("\n");
+
+      const terminal = document.querySelector("#terminal");
+      terminal.innerHTML = "";
+      for (let line of lines) {
+        const element = document.createElement("p");
+        terminal.append(element);
+
+        await typeWrite(terminal, element, line)
+        await sleep(speed * 10);
+
+      }
+    }
+
+    const killer = (parent) => {
+      const element = document.createElement("p");
+      element.classList.add("killer")
+      element.innerHTML = "[One]"
+      parent.append(element);
+
+    }
+
+    const doChunkAllAtOnce = (ele, start_index, text) => {
+      const offset = 0;
+      //look for ending offset
+      //create new span element
+      //have its inner html be the chunk
+      //return the new stop index
+      //ignore any tag stuff before this point (it was already processed)
+      const subtext = text.substring(start_index)
+      const starting_char = text[start_index];
+      let charsTillEnd = 0;
+      if (starting_char === "<") {
+        charsTillEnd = subtext.indexOf(">") + 1
+      } else if (starting_char === "[") {
+        charsTillEnd = subtext.indexOf("]") + 1
+      }
+
+      ele.innerHTML = text.substring(0, start_index + charsTillEnd);
+      return start_index + charsTillEnd;
+    }
+
+    //this version of typeWrite skips certain tags but does them all at once
+    //(necessary to capture html)
+    //v1 just skips lines that start with [
+    //and v2 doesn't play a sound or sleep between [ and ] tags
+    //but neither is sufficient to handle html, so v3 is born
+    //i will, of course, forget where v3 is.
+    //v2, btw, is in SecurityLog
+    //and v1 is in ATranscript and ASecondTranscript
+    //because YES the code is intentionally a shitty maze for my future self
+    //and i guess any future Heirs
+    const typeWrite = async (scroll_element, element, text) => {
+      typing = true;
+      let skipping = false;
+      for (let i = 0; i < text.length; i++) {
+        if (text.charAt(i) === "[" || text.charAt(i) === "<") {
+          skipping = true;
+          i = doChunkAllAtOnce(element, i, text);
+        }
+        if (!skipping) {
+          await sleep(speed);
+          clickAudio.play();
+          element.innerHTML += text.charAt(i);
+        }
+        scroll_element.scrollTop = scroll_element.scrollHeight;
+        skipping = false;
+        if (!typing) {
+          break;
+        }
+      }
+    }
+
+    const play = () => {
+      transcript(realtext);
+    }
+
+
+    window.onload = () => {
+      console.log("She knows the truth: http://andalitetruth.org/")
+      window.onclick = () => {
+        clickAudio.play();
+        if (humAudio.paused) {
+          humAudio.loop = true;
+          humAudio.play();
+        }
+      }
+
+      window.onmousedown = () => {
+        speed = 0;
+      }
+      window.onmouseup = () => {
+        speed = 50;
+      }
+    }
+  </script>
+
+
+</head>
+
+<body>
+  <div id="crt">
+    <div class="scanline"></div>
+    <div class="lines"></div>
+
+    <div id="terminal">
+      <button onClick="play()">Click To Play Transcript</button>
+    </div>
+  </div>
+
+ 
+</body>
+
+</html>
